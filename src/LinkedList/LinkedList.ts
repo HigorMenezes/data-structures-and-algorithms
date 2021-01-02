@@ -1,11 +1,11 @@
 import LinkedListNode from "./LinkedListNode";
 
-type CompareFunction<T> = (forCompare: T, CompareWith: T) => boolean;
+type CompareFunction<T> = (forCompare: T, compareWith: T) => boolean;
 
 const defaultCompareFunction: CompareFunction<unknown> = (
   forCompare,
-  CompareWith,
-) => forCompare === CompareWith;
+  compareWith,
+) => forCompare === compareWith;
 
 class LinkedList<T> {
   private _head?: LinkedListNode<T>;
@@ -106,7 +106,7 @@ class LinkedList<T> {
     return this._tail?.value;
   }
 
-  public insert(index: number, value: T): never | void {
+  public insert(index: number, value: T): void {
     if (index < 0 || index > this._size) {
       throw new Error(
         `Index needs to have value between 0 and the list size, but got ${index}`,
@@ -142,7 +142,7 @@ class LinkedList<T> {
     }
   }
 
-  public erase(index: number): never | void {
+  public erase(index: number): T | undefined {
     if (index < 0 || index > this._size) {
       throw new Error(
         `Index needs to have value between 0 and the list size, but got ${index}`,
@@ -150,9 +150,9 @@ class LinkedList<T> {
     }
 
     if (index === 0) {
-      this.popFront();
+      return this.popFront();
     } else if (index === this._size) {
-      this.popBack();
+      return this.popBack();
     } else {
       let currentNode = this._head;
       let currentIndex = 0;
@@ -167,9 +167,9 @@ class LinkedList<T> {
             currentNode.next.prev = currentNode.prev;
           }
 
+          const valueToReturn = currentNode.value;
           currentNode = undefined;
-
-          break;
+          return valueToReturn;
         }
 
         currentNode = currentNode.next;
@@ -195,6 +195,13 @@ class LinkedList<T> {
     }
 
     return -1;
+  }
+
+  public removeValue(
+    value: T,
+    compareFunction: CompareFunction<T> = defaultCompareFunction,
+  ): T | undefined {
+    return this.erase(this.indexOf(value, compareFunction));
   }
 
   public toArray(): T[] {
