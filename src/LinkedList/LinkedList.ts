@@ -1,5 +1,12 @@
 import LinkedListNode from "./LinkedListNode";
 
+type CompareFunction<T> = (forCompare: T, CompareWith: T) => boolean;
+
+const defaultCompareFunction: CompareFunction<unknown> = (
+  forCompare,
+  CompareWith,
+) => forCompare === CompareWith;
+
 class LinkedList<T> {
   private _head?: LinkedListNode<T>;
   private _tail?: LinkedListNode<T>;
@@ -169,6 +176,25 @@ class LinkedList<T> {
         currentIndex++;
       }
     }
+  }
+
+  public indexOf(
+    value: T,
+    compareFunction: CompareFunction<T> = defaultCompareFunction,
+  ): number {
+    let currentNode = this._head;
+    let currentIndex = 0;
+
+    while (currentNode) {
+      if (compareFunction(value, currentNode.value)) {
+        return currentIndex;
+      }
+
+      currentNode = currentNode.next;
+      currentIndex++;
+    }
+
+    return -1;
   }
 
   public toArray(): T[] {

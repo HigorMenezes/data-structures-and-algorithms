@@ -2,12 +2,9 @@ import LinkedList from "./LinkedList";
 
 const list = new LinkedList<number>();
 
-list.pushFront(10);
-list.pushFront(20);
-list.pushFront(30);
-list.pushFront(40);
-list.pushFront(50);
-list.erase(2);
-
-console.log("Details", list.getLinkedListDetail());
-console.log("Array", list.toArray());
+list.pushBack(10);
+list.pushBack(20);
+list.pushBack(30);
+list.pushBack(40);
+list.pushBack(50);
+console.log(list.indexOf(10));
