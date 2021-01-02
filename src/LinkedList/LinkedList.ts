@@ -22,6 +22,14 @@ class LinkedList<T> {
     return this._size === 0;
   }
 
+  public front(): T | undefined {
+    return this._head?.value;
+  }
+
+  public back(): T | undefined {
+    return this._tail?.value;
+  }
+
   public pushFront(value: T): void {
     const newNode = new LinkedListNode(value);
 
@@ -88,7 +96,7 @@ class LinkedList<T> {
     } else {
       const popValue = this._tail?.value;
 
-      this._tail = this._head?.prev;
+      this._tail = this._tail?.prev;
 
       if (this._tail?.next) {
         this._tail.next = undefined;
@@ -96,14 +104,6 @@ class LinkedList<T> {
 
       return popValue;
     }
-  }
-
-  public front(): T | undefined {
-    return this._head?.value;
-  }
-
-  public back(): T | undefined {
-    return this._tail?.value;
   }
 
   public insert(index: number, value: T): void {
@@ -201,7 +201,12 @@ class LinkedList<T> {
     value: T,
     compareFunction: CompareFunction<T> = defaultCompareFunction,
   ): T | undefined {
-    return this.erase(this.indexOf(value, compareFunction));
+    const valueIndex = this.indexOf(value, compareFunction);
+
+    if (valueIndex === -1) {
+      return undefined;
+    }
+    return this.erase(valueIndex);
   }
 
   public toArray(): T[] {
