@@ -135,6 +135,42 @@ class LinkedList<T> {
     }
   }
 
+  public erase(index: number): never | void {
+    if (index < 0 || index > this._size) {
+      throw new Error(
+        `Index needs to have value between 0 and the list size, but got ${index}`,
+      );
+    }
+
+    if (index === 0) {
+      this.popFront();
+    } else if (index === this._size) {
+      this.popBack();
+    } else {
+      let currentNode = this._head;
+      let currentIndex = 0;
+
+      while (currentNode && currentIndex <= index) {
+        if (index === currentIndex) {
+          if (currentNode.prev) {
+            currentNode.prev.next = currentNode.next;
+          }
+
+          if (currentNode.next) {
+            currentNode.next.prev = currentNode.prev;
+          }
+
+          currentNode = undefined;
+
+          break;
+        }
+
+        currentNode = currentNode.next;
+        currentIndex++;
+      }
+    }
+  }
+
   public toArray(): T[] {
     let valueArray: T[] = [];
 
