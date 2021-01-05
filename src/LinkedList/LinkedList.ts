@@ -58,9 +58,10 @@ class LinkedList<T> {
     if (!this.isEmpty()) {
       poppedValue = this._head!.value;
       this._head = this._head!.next;
-      this._head!.prev = undefined;
 
-      if (!this._head) {
+      if (this._head) {
+        this._head.prev = undefined;
+      } else {
         this._tail = undefined;
       }
     }
@@ -91,9 +92,10 @@ class LinkedList<T> {
     if (!this.isEmpty()) {
       poppedValue = this._tail!.value;
       this._tail = this._tail!.prev;
-      this._tail!.next = undefined;
 
-      if (!this._tail) {
+      if (this._tail) {
+        this._tail.next = undefined;
+      } else {
         this._head = undefined;
       }
     }
@@ -107,13 +109,11 @@ class LinkedList<T> {
     if (this.isAValidIndex(index)) {
       if (index === 0) {
         this.pushFront(value);
-      } else if (index === this._size - 1) {
-        this.pushBack(value);
       } else {
         let currentNode = this._head!.next;
         let currentIndex = 1;
 
-        while (currentNode && currentNode.next && currentIndex <= index) {
+        while (currentNode && currentIndex <= index) {
           if (index === currentIndex) {
             const newNode = new LinkedListNode(value);
             newNode.next = currentNode;
@@ -141,7 +141,7 @@ class LinkedList<T> {
       if (index === 0) {
         return this.popFront();
       } else if (index === this._size - 1) {
-        this.popBack();
+        return this.popBack();
       } else {
         let currentNode = this._head!.next;
         let currentIndex = 1;
