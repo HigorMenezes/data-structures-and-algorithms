@@ -1,6 +1,6 @@
 import LinkedListNode from "./LinkedListNode";
 
-type CompareFunction<T> = (forCompare: T, compareWith: T) => boolean;
+export type CompareFunction<T> = (forCompare: T, compareWith: T) => boolean;
 
 const defaultCompareFunction: CompareFunction<unknown> = (
   forCompare,
@@ -11,15 +11,22 @@ class LinkedList<T> {
   private _head?: LinkedListNode<T>;
   private _tail?: LinkedListNode<T>;
   private _size: number = 0;
+  private _compareFunction: CompareFunction<T>;
 
-  constructor() {}
+  constructor(compareFunction?: CompareFunction<T>) {
+    this._compareFunction = compareFunction ?? defaultCompareFunction;
+  }
+
+  private isAValidIndex(index: number): boolean {
+    return index >= 0 && index < this._size;
+  }
 
   public size() {
     return this._size;
   }
 
   public isEmpty() {
-    return this._size === 0;
+    return !(this._head && this._tail);
   }
 
   public front(): T | undefined {
@@ -33,154 +40,134 @@ class LinkedList<T> {
   public pushFront(value: T): void {
     const newNode = new LinkedListNode(value);
 
-    if (this._head) {
-      this._head.prev = newNode;
-      newNode.next = this._head;
-      this._head = newNode;
-    } else {
+    if (this.isEmpty()) {
       this._head = newNode;
       this._tail = newNode;
+    } else {
+      this._head!.prev = newNode;
+      newNode.next = this._head;
+      this._head = newNode;
     }
 
-    this._size += 1;
+    this._size++;
   }
 
   public popFront(): T | undefined {
-    if (this._size === 0) {
-      return undefined;
-    } else if (this._size === 1) {
-      const popValue = this._head?.value;
+    let poppedValue: T | undefined;
 
-      this._head = undefined;
-      this._tail = undefined;
+    if (!this.isEmpty()) {
+      poppedValue = this._head!.value;
+      this._head = this._head!.next;
+      this._head!.prev = undefined;
 
-      return popValue;
-    } else {
-      const popValue = this._head?.value;
-
-      this._head = this._head?.next;
-
-      if (this._head?.prev) {
-        this._head.prev = undefined;
+      if (!this._head) {
+        this._tail = undefined;
       }
-
-      return popValue;
     }
+
+    this._size--;
+
+    return poppedValue;
   }
 
   public pushBack(value: T): void {
     const newNode = new LinkedListNode(value);
 
-    if (this._tail) {
-      newNode.prev = this._tail;
-      this._tail.next = newNode;
+    if (this.isEmpty()) {
+      this._head = newNode;
       this._tail = newNode;
     } else {
-      this._head = newNode;
+      this._tail!.next = newNode;
+      newNode.prev = this._tail;
       this._tail = newNode;
     }
 
-    this._size += 1;
+    this._size++;
   }
 
   public popBack(): T | undefined {
-    if (this._size === 0) {
-      return undefined;
-    } else if (this._size === 1) {
-      const popValue = this._tail?.value;
+    let poppedValue: T | undefined;
 
-      this._head = undefined;
-      this._tail = undefined;
+    if (!this.isEmpty()) {
+      poppedValue = this._tail!.value;
+      this._tail = this._tail!.prev;
+      this._tail!.next = undefined;
 
-      return popValue;
-    } else {
-      const popValue = this._tail?.value;
-
-      this._tail = this._tail?.prev;
-
-      if (this._tail?.next) {
-        this._tail.next = undefined;
+      if (!this._tail) {
+        this._head = undefined;
       }
-
-      return popValue;
     }
+
+    this._size--;
+
+    return poppedValue;
   }
 
   public insert(index: number, value: T): void {
-    if (index < 0 || index > this._size) {
-      throw new Error(
-        `Index needs to have value between 0 and the list size, but got ${index}`,
-      );
-    }
+    if (this.isAValidIndex(index)) {
+      if (index === 0) {
+        this.pushFront(value);
+      } else if (index === this._size - 1) {
+        this.pushBack(value);
+      } else {
+        let currentNode = this._head!.next;
+        let currentIndex = 1;
 
-    if (index === 0) {
-      this.pushFront(value);
-    } else if (index === this._size) {
-      this.pushBack(value);
-    } else {
-      let currentNode = this._head;
-      let currentIndex = 0;
+        while (currentNode && currentNode.next && currentIndex <= index) {
+          if (index === currentIndex) {
+            const newNode = new LinkedListNode(value);
+            newNode.next = currentNode;
+            newNode.prev = currentNode.prev;
 
-      while (currentNode && currentIndex <= index) {
-        if (index === currentIndex) {
-          const newNode = new LinkedListNode(value);
-          newNode.next = currentNode;
-          newNode.prev = currentNode.prev;
+            currentNode.prev!.next = newNode;
+            currentNode.prev = newNode;
 
-          if (currentNode.prev) {
-            currentNode.prev.next = newNode;
+            break;
           }
 
-          currentNode.prev = newNode;
-
-          break;
+          currentNode = currentNode.next;
+          currentIndex++;
         }
-
-        currentNode = currentNode.next;
-        currentIndex++;
       }
+    } else {
+      throw new Error(
+        `Index has to be between 0 and ${this._size}, but it is ${index}`,
+      );
     }
   }
 
   public erase(index: number): T | undefined {
-    if (index < 0 || index > this._size) {
-      throw new Error(
-        `Index needs to have value between 0 and the list size, but got ${index}`,
-      );
-    }
+    if (this.isAValidIndex(index)) {
+      if (index === 0) {
+        return this.popFront();
+      } else if (index === this._size - 1) {
+        this.popBack();
+      } else {
+        let currentNode = this._head!.next;
+        let currentIndex = 1;
 
-    if (index === 0) {
-      return this.popFront();
-    } else if (index === this._size) {
-      return this.popBack();
-    } else {
-      let currentNode = this._head;
-      let currentIndex = 0;
+        while (currentNode && currentNode.next && currentIndex <= index) {
+          if (index === currentIndex) {
+            currentNode.prev!.next = currentNode.next;
+            currentNode.next!.prev = currentNode.prev;
 
-      while (currentNode && currentIndex <= index) {
-        if (index === currentIndex) {
-          if (currentNode.prev) {
-            currentNode.prev.next = currentNode.next;
+            return currentNode.value;
           }
 
-          if (currentNode.next) {
-            currentNode.next.prev = currentNode.prev;
-          }
-
-          const valueToReturn = currentNode.value;
-          currentNode = undefined;
-          return valueToReturn;
+          currentNode = currentNode.next;
+          currentIndex++;
         }
-
-        currentNode = currentNode.next;
-        currentIndex++;
       }
+    } else {
+      throw new Error(
+        `Index has to be between 0 and ${this._size}, but it is ${index}`,
+      );
     }
   }
 
   public indexOf(
     value: T,
-    compareFunction: CompareFunction<T> = defaultCompareFunction,
+    compareFunction: CompareFunction<T> = this._compareFunction,
   ): number {
     let currentNode = this._head;
     let currentIndex = 0;
@@ -199,22 +186,19 @@ class LinkedList<T> {
 
   public removeValue(
     value: T,
-    compareFunction: CompareFunction<T> = defaultCompareFunction,
+    compareFunction: CompareFunction<T> = this._compareFunction,
   ): T | undefined {
     const valueIndex = this.indexOf(value, compareFunction);
 
     if (valueIndex === -1) {
       return undefined;
     }
+
     return this.erase(valueIndex);
   }
 
   public toArray(): T[] {
     let valueArray: T[] = [];
-
-    if (this._size === 0) {
-      return valueArray;
-    }
 
     let currentNode = this._head;
     while (currentNode) {
