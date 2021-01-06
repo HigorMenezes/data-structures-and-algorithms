@@ -21,6 +21,14 @@ class LinkedList<T> {
     return index >= 0 && index < this._size;
   }
 
+  private increaseSize(): void {
+    this._size++;
+  }
+
+  private decreaseSize(): void {
+    this._size--;
+  }
+
   public size() {
     return this._size;
   }
@@ -49,7 +57,7 @@ class LinkedList<T> {
       this._head = newNode;
     }
 
-    this._size++;
+    this.increaseSize();
   }
 
   public popFront(): T | undefined {
@@ -66,7 +74,7 @@ class LinkedList<T> {
       }
     }
 
-    this._size--;
+    this.decreaseSize();
 
     return poppedValue;
   }
@@ -83,7 +91,7 @@ class LinkedList<T> {
       this._tail = newNode;
     }
 
-    this._size++;
+    this.increaseSize();
   }
 
   public popBack(): T | undefined {
@@ -100,7 +108,7 @@ class LinkedList<T> {
       }
     }
 
-    this._size--;
+    this.decreaseSize();
 
     return poppedValue;
   }
@@ -121,7 +129,7 @@ class LinkedList<T> {
 
             currentNode.prev!.next = newNode;
             currentNode.prev = newNode;
-
+            this.increaseSize();
             break;
           }
 
@@ -150,7 +158,7 @@ class LinkedList<T> {
           if (index === currentIndex) {
             currentNode.prev!.next = currentNode.next;
             currentNode.next!.prev = currentNode.prev;
-
+            this.decreaseSize();
             return currentNode.value;
           }
 
@@ -210,21 +218,21 @@ class LinkedList<T> {
     return valueArray;
   }
 
-  public getLinkedListDetail() {
-    let details: LinkedListNode<T>[] = [];
+  public toString(): string {
+    let linkedListArrayString: string[] = [];
 
     if (this.isEmpty()) {
-      return details;
+      return "";
     }
 
     let currentNode = this._head;
     while (currentNode) {
-      details.push(currentNode);
+      linkedListArrayString.push(currentNode.toString());
 
       currentNode = currentNode?.next;
     }
 
-    return details;
+    return linkedListArrayString.join(" | ");
   }
 }
 

@@ -34,9 +34,11 @@ class LinkedListNode<T> {
   }
 
   toString(): string {
-    let printString = String(this._value);
+    let nodeString = `${String(this._prev?._value)} <- ${String(
+      this._value,
+    )} -> ${String(this._next?._value)}`;
 
-    return printString;
+    return nodeString;
   }
 }
 
