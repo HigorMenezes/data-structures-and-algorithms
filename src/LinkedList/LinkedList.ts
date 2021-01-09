@@ -202,16 +202,16 @@ class LinkedList<T> {
   }
 
   public toArray(): T[] {
-    let valueArray: T[] = [];
+    let linkedListArray: T[] = [];
 
     let currentNode = this._head;
     while (currentNode) {
-      valueArray.push(currentNode.value);
+      linkedListArray.push(currentNode.value);
 
       currentNode = currentNode.next;
     }
 
-    return valueArray;
+    return linkedListArray;
   }
 
   public toString(): string {
