@@ -72,9 +72,9 @@ class LinkedList<T> {
       } else {
         this._tail = undefined;
       }
-    }
 
-    this.decreaseSize();
+      this.decreaseSize();
+    }
 
     return poppedValue;
   }
@@ -106,9 +106,9 @@ class LinkedList<T> {
       } else {
         this._head = undefined;
       }
-    }
 
-    this.decreaseSize();
+      this.decreaseSize();
+    }
 
     return poppedValue;
   }
@@ -138,9 +138,7 @@ class LinkedList<T> {
         }
       }
     } else {
-      throw new Error(
-        `Index has to be between 0 and ${this._size}, but it is ${index}`,
-      );
+      throw new Error(`${index} is a invalid index`);
     }
   }
 
@@ -167,9 +165,7 @@ class LinkedList<T> {
         }
       }
     } else {
-      throw new Error(
-        `Index has to be between 0 and ${this._size}, but it is ${index}`,
-      );
+      throw new Error(`${index} is a invalid index`);
     }
   }
 
@@ -212,7 +208,7 @@ class LinkedList<T> {
     while (currentNode) {
       valueArray.push(currentNode.value);
 
-      currentNode = currentNode?.next;
+      currentNode = currentNode.next;
     }
 
     return valueArray;
@@ -229,7 +225,7 @@ class LinkedList<T> {
     while (currentNode) {
       linkedListArrayString.push(currentNode.toString());
 
-      currentNode = currentNode?.next;
+      currentNode = currentNode.next;
     }
 
     return linkedListArrayString.join(" | ");

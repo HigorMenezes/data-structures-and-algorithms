@@ -207,6 +207,15 @@ describe("LinkedList tests", () => {
         list.insert(2, 35);
         expect(list.toArray()).toMatchObject([20, 30, 35, 40, 50]);
       });
+
+      it("should try to insert value on incorrect position of liked list", () => {
+        expect(() => list.insert(-1, 35)).toThrowError(
+          new Error("-1 is a invalid index"),
+        );
+        expect(() => list.insert(list.size(), 35)).toThrowError(
+          new Error("4 is a invalid index"),
+        );
+      });
     });
 
     describe("Object values <{score: number}>", () => {
@@ -252,6 +261,15 @@ describe("LinkedList tests", () => {
           { score: 50 },
         ]);
       });
+
+      it("should try to insert value on incorrect position of liked list", () => {
+        expect(() => list.insert(-1, { score: 35 })).toThrowError(
+          new Error("-1 is a invalid index"),
+        );
+        expect(() => list.insert(list.size(), { score: 35 })).toThrowError(
+          new Error("4 is a invalid index"),
+        );
+      });
     });
   });
 
@@ -280,6 +298,15 @@ describe("LinkedList tests", () => {
       it("should erase value on middle of liked list", () => {
         expect(list.erase(2)).toBe(40);
         expect(list.toArray()).toMatchObject([20, 30, 50]);
+      });
+
+      it("should try to erase value on incorrect position of liked list", () => {
+        expect(() => list.erase(-1)).toThrowError(
+          new Error("-1 is a invalid index"),
+        );
+        expect(() => list.erase(list.size())).toThrowError(
+          new Error("4 is a invalid index"),
+        );
       });
     });
 
@@ -319,6 +346,15 @@ describe("LinkedList tests", () => {
           { score: 30 },
           { score: 50 },
         ]);
+      });
+
+      it("should try to erase value on incorrect position of liked list", () => {
+        expect(() => list.erase(-1)).toThrowError(
+          new Error("-1 is a invalid index"),
+        );
+        expect(() => list.erase(list.size())).toThrowError(
+          new Error("4 is a invalid index"),
+        );
       });
     });
   });
@@ -491,6 +527,10 @@ describe("LinkedList tests", () => {
 
       it("should return the size of linked list", () => {
         expect(list.size()).toBe(0);
+        list.popBack();
+        expect(list.size()).toBe(0);
+        list.popFront();
+        expect(list.size()).toBe(0);
         list.pushFront(0);
         expect(list.size()).toBe(1);
         list.pushFront(10);
@@ -530,6 +570,10 @@ describe("LinkedList tests", () => {
       });
 
       it("should return the size of linked list", () => {
+        expect(list.size()).toBe(0);
+        list.popBack();
+        expect(list.size()).toBe(0);
+        list.popFront();
         expect(list.size()).toBe(0);
         list.pushFront({ score: 0 });
         expect(list.size()).toBe(1);
@@ -769,6 +813,10 @@ describe("LinkedList tests", () => {
       expect(list.toString()).toBe(
         "undefined <- 30 -> 10 | 30 <- 10 -> undefined",
       );
+      list.popFront();
+      expect(list.toString()).toBe("undefined <- 10 -> undefined");
+      list.popBack();
+      expect(list.toString()).toBe("");
     });
   });
 });

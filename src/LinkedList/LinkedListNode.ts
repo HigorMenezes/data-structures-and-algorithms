@@ -13,10 +13,6 @@ class LinkedListNode<T> {
     return this._value;
   }
 
-  set value(newValue: T) {
-    this._value = newValue;
-  }
-
   get next(): LinkedListNode<T> | undefined {
     return this._next;
   }
